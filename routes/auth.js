@@ -3,7 +3,7 @@ const { body } = require("express-validator")
 const router = express.Router()
 const User = require("../models/user")
 const authController = require("../controllers/auth")
-router.put('/singup',[
+router.put('/signup', [
     body('email')
         .isEmail()
         .withMessage("Please entera valid email")
@@ -25,6 +25,7 @@ router.put('/singup',[
         .isLength({ min: 5 })
 
 ], authController.sigup)
+router.post('/login',authController.login)
 
 
 module.exports = router

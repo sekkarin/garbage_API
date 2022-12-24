@@ -3,7 +3,7 @@ const fs = require('fs');
 const { totalmem } = require('os');
 const path = require('path')
 const Post = require('../models/post');
-
+const User = require('../models/user')
 exports.getPosts = (req, res, next) => {
   const currentPage = req.query.page || 1
   const perPage = 2
@@ -13,12 +13,12 @@ exports.getPosts = (req, res, next) => {
     .then(count => {
       totalItems = count
       return Post.find()
-      .skip((currentPage-1) * perPage)
-      .limit(perPage)
+        .skip((currentPage - 1) * perPage)
+        .limit(perPage)
     })
-    .then(posts=>{
+    .then(posts => {
       res.status(200)
-      .json({message:"Fetced posts successfully",posts:posts,totalItems:totalItems})
+        .json({ message: "Fetced posts successfully", posts: posts, totalItems: totalItems })
     })
     .catch(err => {
       console.log(err);
@@ -30,6 +30,7 @@ exports.getPosts = (req, res, next) => {
 
 };
 exports.createPost = (req, res, next) => {
+  console.log(req.userId,"from create post");
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error('Validation failed, entered data is incorrect.');
@@ -44,19 +45,34 @@ exports.createPost = (req, res, next) => {
   // const imageUrl = req.file.path;
   const title = req.body.title;
   const content = req.body.content;
+  let creator
+  // console.log(req.userId);
   const imageUrl = req.file.path.replace("\\", "/");
   const post = new Post({
     title: title,
     content: content,
     imageUrl: imageUrl,
-    creator: { name: 'Kennn' }
+    creator: req.userId
   });
-  post
-    .save()
+  post.save()
     .then(result => {
+      console.log(req.userId,"from create post");
+      return User.findById(req.userId)
+
+    })
+    .then(user => {
+      creator = user
+      user.posts.push(post)
+      return user.save()
+
+    })
+    .then(result => {
+      // console.log(creator);
+      // console.log(creator._id, creator.name);
       res.status(201).json({
         message: 'Post created successfully!',
-        post: result
+        post: post,
+        creator: { _id: creator._id, name: creator.name }
       });
     })
     .catch(err => {
@@ -68,7 +84,7 @@ exports.createPost = (req, res, next) => {
 };
 exports.getPost = (req, res, next) => {
   const postId = req.params.postId;
-  console.log(postId, typeof postId);
+  // console.log(postId, typeof postId);
   Post.findById(postId)
     .then(post => {
       if (!post) {
@@ -96,7 +112,7 @@ exports.updatePost = (req, res, next) => {
   const title = req.body.title
   const content = req.body.content
   let imageUrl = req.body.image
-  console.log(req.body);
+  // console.log(req.body);
   if (req.file) {
     imageUrl = req.file.path
   }
@@ -112,6 +128,11 @@ exports.updatePost = (req, res, next) => {
         const error = new Error('Could not find post.');
         error.statusCode = 404;
         throw error;
+      }
+      if (post.creator.toString() !== req.userId) {
+        const error = new Error('Not authorization')
+        error.statusCode = 403
+        throw error
       }
       if (imageUrl !== post.imageUrl) {
         clearImage(post.imageUrl)
@@ -140,17 +161,34 @@ exports.deletePost = (req, res, next) => {
   Post.findById(postId)
     .then(
       post => {
+        if (!post) {
+          const error = new Error('Could not find post.');
+          error.statusCode = 404;
+          throw error;
+        }
+        if (post.creator.toString() !== req.userId) {
+          const error = new Error('Not authorization')
+          error.statusCode = 403
+          throw error
+        }
         clearImage(post.imageUrl)
         return Post.findByIdAndRemove(postId)
       }
     )
     .then(result => {
-      console.log(result);
-      res.status(200).json({
-        message: "deleted post",
-
-      })
+      return User.findById(req.userId)
     })
+    .then(user => {
+      user.posts.pull(postId)
+      return user.save()
+
+    })
+  then(result => {
+    // console.log(result);
+    res.status(200).json({
+      message: "deleted post"
+    })
+  })
     .catch(err => {
       console.log(err);
     })
