@@ -19,10 +19,7 @@ router.put('/signup', [
     body('password')
         .trim()
         .not()
-        .isEmpty(),
-    body('name')
-        .trim()
-        .isLength({ min: 5 })
+        .isEmpty()
 
 ], authController.sigup)
 router.post('/login',authController.login)

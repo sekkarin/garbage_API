@@ -12,14 +12,33 @@ exports.sigup = (req, res, next) => {
         throw error;
     }
     const email = req.body.email
-    const name = req.body.name
     const password = req.body.password
+    const f_name = req.body.f_name
+    const l_name = req.body.l_name
+    const house_on = req.body.house_on
+    const village = req.body.village
+    const sub_district = req.body.sub_district
+    const district = req.body.district
+    const province = req.body.province
+    const postal_code = req.body.postal_code
+    const imageUrl = req.body.imageUrl
+    // const status = req.body.status
     bcrypt.hash(password, 12)
         .then(hashPw => {
             const user = new User({
                 email: email,
                 password: hashPw,
-                name: name
+                f_name: f_name,
+                l_name: l_name,
+                house_on: house_on,
+                village: village,
+                sub_district: sub_district,
+                district: district,
+                district: district,
+                postal_code: postal_code,
+                imageUrl: imageUrl,
+                province: province,
+                status: "User",
             })
             return user.save()
         })
@@ -56,7 +75,9 @@ exports.login = (req, res, next) => {
                 error.ststusCode = 401
                 throw error
             }
-            const token = jwt.sign({ email: loadUser.email, userId: loadUser._id.toString() }, 'Hello world', { expiresIn: '1h' })
+            const token = jwt.sign({ email: loadUser.email, userId: loadUser._id.toString(),status:loadUser.status },
+             'Hello world', { expiresIn: '120d' })
+            
             res.status(200)
             .json({token:token,userId:loadUser._id.toString()})
         })

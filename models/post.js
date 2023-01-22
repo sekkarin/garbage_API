@@ -1,4 +1,4 @@
-const { mod } = require('mathjs')
+
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 

@@ -1,9 +1,11 @@
 const { validationResult } = require('express-validator/check');
 const fs = require('fs');
-const { totalmem } = require('os');
+
 const path = require('path')
 const Post = require('../models/post');
 const User = require('../models/user')
+
+
 exports.getPosts = (req, res, next) => {
   const currentPage = req.query.page || 1
   const perPage = 2
@@ -67,8 +69,6 @@ exports.createPost = (req, res, next) => {
 
     })
     .then(result => {
-      // console.log(creator);
-      // console.log(creator._id, creator.name);
       res.status(201).json({
         message: 'Post created successfully!',
         post: post,

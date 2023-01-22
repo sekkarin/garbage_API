@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
     let decodeTotken
     try {
         decodeTotken = jwt.verify(token, 'Hello world')
-       console.log("is-auth",decodeTotken);
+    //    console.log("is-auth",decodeTotken);
     } catch (error) {
         error.statusCode = 500
         throw error
