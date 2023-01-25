@@ -6,7 +6,7 @@ const router = express.Router();
 
 // GET /feed/posts
 router.get('/posts',isAuth, feedController.getPosts);
-
+// post/posts/............
 // POST /feed/post
 router.post('/post',isAuth,
     [body("title").rtrim().isLength({ min: 5 }),
@@ -21,4 +21,7 @@ router.put('/post/:postId',isAuth,
     body('content').rtrim().isLength({ min: 5 })], feedController.updatePost)
 
 router.delete('/post/:postId',isAuth,feedController.deletePost)
+
+
+
 module.exports = router;

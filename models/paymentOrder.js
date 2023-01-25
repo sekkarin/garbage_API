@@ -2,16 +2,13 @@ const mongodb = require('mongoose')
 const Schema = mongodb.Schema
 const paymentOrderSchema = new Schema(
     {
-        userid: {
+        userid: [{
             type: Schema.Types.ObjectId,
             ref: "User",
             // required: true
-        },
+        }],
         date_paid: {
             type: Date
-        },
-        payment_noti: {
-            type: Date,
         },
         invoice_id:
         [{

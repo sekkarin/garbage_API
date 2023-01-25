@@ -53,13 +53,13 @@ exports.getorder = async (req, res, next) => {
     const userId = req.userId
 
     const order = await Order.find({ userid: userId })
-
-        // .populate('invoice_id')
-        // .select('invoice_id')
-        // .exists({name:'Amit'})
+    // .populate('invoce_id')
+        .select('invoice_id')
         .then(order => {
             // console.log(order);
-            return order
+            // return order
+            res.status(200)
+                .json({ order: order })
         })
         .catch(err => {
             console.log(err);
@@ -68,5 +68,5 @@ exports.getorder = async (req, res, next) => {
             }
             next(err);
         })
-    console.log(order);
+    // console.log(order);
 }

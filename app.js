@@ -34,6 +34,8 @@ const fileFilter = (req, file, cb) => {
         cb(null, false);
     }
 };
+
+
 app.use(cors())
 // app.use(bodyParser.urlencoded()); // x-www-form-urlencoded <form>
 app.use(bodyParser.json()); // application/json
