@@ -92,7 +92,7 @@ app.post('/payment-sheet', async (req, res) => {
         publishableKey: ''
     });
 });
-app.post('/', async (req, res) => {
+app.get('/', async (req, res) => {
     res.send("garbage App");
 });
 
