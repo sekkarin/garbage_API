@@ -92,6 +92,9 @@ app.post('/payment-sheet', async (req, res) => {
         publishableKey: ''
     });
 });
+app.post('/', async (req, res) => {
+    res.send("garbage App");
+});
 
 mongoose
     .connect(`mongodb+srv://sekkarin:${process.env.PASSWORDMONGODB}@cluster0.o8efvyv.mongodb.net/garbage?retryWrites=true&w=majority`)
