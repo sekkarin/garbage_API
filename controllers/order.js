@@ -50,14 +50,12 @@ exports.getorder = async (req, res, next) => {
         throw error;
     }
     const userId = req.userId
+    const id = req.params.id
+    console.log(userId);
 
     Order.find({ userid: userId })
-        // .populate('invoce_id')
         // .select('invoice_id')
         .then(order => {
-
-            // console.log(order);
-            // return order
             res.status(200)
                 .json({ order: order })
         })
