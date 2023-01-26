@@ -10,9 +10,9 @@ exports.initOrder = (req, res, next) => {
         throw error;
     }
     const userId = req.userId
-    Order.find().select(userId)
+    Order.find({userid:userId})
         .then(user => {
-            // console.log("userrrrrrr", user);
+            console.log("userrrrrrr", user);
             if (user.length === 0) {
                 const order = new Order({
                     userid: userId,
@@ -50,7 +50,7 @@ exports.getorder = async (req, res, next) => {
         throw error;
     }
     const userId = req.userId
-    const id = req.params.id
+    // const id = req.params.id
     console.log(userId);
 
     Order.find({ userid: userId })
