@@ -1,7 +1,6 @@
 const { Result, validationResult } = require('express-validator');
 const Order = require('../models/paymentOrder')
-const Invoice = require('../models/invoice');
-const invoice = require('../models/invoice');
+
 
 exports.initOrder = (req, res, next) => {
     const errors = validationResult(req);
@@ -52,14 +51,57 @@ exports.getorder = async (req, res, next) => {
     }
     const userId = req.userId
 
-    const order = await Order.find({ userid: userId })
-    // .populate('invoce_id')
+    Order.find({ userid: userId })
+        // .populate('invoce_id')
         .select('invoice_id')
         .then(order => {
+
             // console.log(order);
             // return order
             res.status(200)
                 .json({ order: order })
+        })
+        .catch(err => {
+            console.log(err);
+
+exports.checkout = async (req, res, next) => {
+    const errors = validationResult(req);
+    const id_order = req.params.id_order
+    const invoice_id = req.body.invoice_id
+    // console.log("id_invoice",invoice_id);
+    if (!errors.isEmpty()) {
+        const error = new Error('Validation failed, entered data is incorrect.');
+        error.statusCode = 422;
+        throw error;
+    }
+    // const userId = req.userId
+
+    Order.findById(id_order)
+        .then(order => {
+            if (!order) {
+                const error = new Error('Could not find order.');
+                error.statusCode = 404;
+                throw error;
+            }
+            // let order_arr =[...]
+            // let order_arr = 
+            // console.log(order_arr);
+            // console.log(order.invoice_id.toString());
+
+            order.invoice_id.push(invoice_id)
+            order.save()
+                .then(result => {
+                    res.status(200)
+                        .json({ order: result })
+                }).catch(err => {
+                    console.log(err);
+                    if (!err.statusCode) {
+                        err.statusCode = 500;
+                    }
+                    next(err);
+                })
+
+
         })
         .catch(err => {
             console.log(err);
