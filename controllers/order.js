@@ -63,7 +63,13 @@ exports.getorder = async (req, res, next) => {
         })
         .catch(err => {
             console.log(err);
-
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        })
+    // console.log(order);
+}
 exports.checkout = async (req, res, next) => {
     const errors = validationResult(req);
     const id_order = req.params.id_order

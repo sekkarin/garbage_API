@@ -1,6 +1,6 @@
 const { validationResult } = require("express-validator");
 const Invoice = require("../models/invoice")
-
+const { ObjectId } = require('mongodb');
 exports.getByInvoice = (req, res, next) => {
   const idInv = req.params.id
   Invoice.findById(idInv)

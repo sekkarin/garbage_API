@@ -101,18 +101,17 @@ mongoose
     .then(result => {
         bcrypt.hash("123456789", 12)
             .then(hashPw => {
-                User.find({ f_name: "SupperAdmin", status: "Admin" })
+                User.find({status: "Admin" })
                     .then(user => {
                         if (!user.length) {
                             const user = new User({
                                 email: "Admin@Admin.com",
                                 password: hashPw,
-                                f_name: "SupperAdmin",
-                                l_name: "123456789",
+                                f_name: "AdminMyGarbage",
+                                l_name: "Grabage",
                                 house_on: "null",
                                 village: "null",
                                 sub_district: "null",
-                                district: "null",
                                 district: "null",
                                 postal_code: "null",
                                 imageUrl: "null",
