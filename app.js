@@ -14,6 +14,7 @@ const app = express();
 const cors = require("cors")
 const User = require("./models/user")
 const bcrypt = require('bcryptjs')
+const isAuth = require('./middlewares/is-auth')
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -69,16 +70,18 @@ app.use((error, req, res, next) => {
     res.status(status).json({ message: message, data: data });
 });
 
-app.post('/payment-sheet', async (req, res) => {
+app.post('/payment-sheet',isAuth, async (req, res) => {
     // Use an existing Customer ID if this is a returning customer.
+    const price = req.body.price
     const customer = await stripe.customers.create();
+    // console.log(customer.id);
     const ephemeralKey = await stripe.ephemeralKeys.create(
         { customer: customer.id },
         { apiVersion: '2022-11-15' }
     );
     const paymentIntent = await stripe.paymentIntents.create({
-        amount: 1099,
-        currency: 'eur',
+        amount: price*100,
+        currency: 'thb',
         customer: customer.id,
         automatic_payment_methods: {
             enabled: true,
@@ -89,9 +92,11 @@ app.post('/payment-sheet', async (req, res) => {
         paymentIntent: paymentIntent.client_secret,
         ephemeralKey: ephemeralKey.secret,
         customer: customer.id,
-        publishableKey: ''
+        publishableKey: 'pk_test_51MRWDYL9mFxnSBD4okDalpRO8YO9BQovF44Jdm2qYrdh30nwKXo9A8oX1zFh7O3075cCZdih0bOo0fy5HNkIvdUp00VZ18p3ku'
     });
 });
+
+
 app.get('/', async (req, res) => {
     res.send("garbage App");
 });
