@@ -15,7 +15,6 @@ const cors = require("cors")
 const User = require("./models/user")
 const bcrypt = require('bcryptjs')
 const isAuth = require('./middlewares/is-auth')
-const { MongoClient, ServerApiVersion } = require('mongodb');
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'images');
