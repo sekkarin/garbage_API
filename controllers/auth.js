@@ -75,7 +75,7 @@ exports.login = (req, res, next) => {
                 error.ststusCode = 401
                 throw error
             }
-            const token = jwt.sign({ email: loadUser.email, userId: loadUser._id.toString(),status:loadUser.status },
+            const token = jwt.sign({ email: loadUser.email, userId: loadUser._id.toString(),status:loadUser.status,imageUrl:loadUser.imageUrl },
              'Hello world', { expiresIn: '120d' })
             
             res.status(200)
